@@ -37,8 +37,6 @@ impl Sheet {
 	pub fn from_stream(stream: &TcpStream) -> Result<Self, SheetError> {
 		let (is_ok, size) = read_headers(stream)?;
 
-		println!("is_ok = {}, size = {}", is_ok, size);
-
 		let sheet = Sheet {
 			is_ok,
 			size,
