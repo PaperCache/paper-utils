@@ -1,6 +1,9 @@
+pub mod error;
+pub mod builder;
+
 use std::io;
 use tokio::net::TcpStream;
-use crate::sheet_error::{SheetError, ErrorKind};
+pub use crate::sheet::error::{SheetError, ErrorKind};
 
 pub const OK_INDICATOR: u8 = 33;
 pub const NOT_OK_INDICATOR: u8 = 63;
@@ -8,14 +11,14 @@ pub const NOT_OK_INDICATOR: u8 = 63;
 pub struct Sheet {
 	is_ok: bool,
 	size: u32,
-	data: String,
+	data: Vec<u8>,
 }
 
 impl Sheet {
-	pub fn new(is_ok: bool, size: u32, data: String) -> Self {
+	pub fn new(is_ok: bool, data: Vec<u8>) -> Self {
 		Sheet {
 			is_ok,
-			size,
+			size: data.len() as u32,
 			data,
 		}
 	}
@@ -26,13 +29,15 @@ impl Sheet {
 
 		buf.extend_from_slice(valid_byte);
 		buf.extend_from_slice(&self.size.to_le_bytes());
-		buf.extend_from_slice(self.data.as_bytes());
+		buf.extend_from_slice(&self.data);
 
 		buf
 	}
 
 	pub fn from_stream(stream: &TcpStream) -> Result<Self, SheetError> {
 		let (is_ok, size) = read_headers(stream)?;
+
+		println!("is_ok = {}, size = {}", is_ok, size);
 
 		let sheet = Sheet {
 			is_ok,
@@ -52,8 +57,12 @@ impl Sheet {
 		self.size
 	}
 
-	pub fn data(&self) -> &str {
+	pub fn data(&self) -> &Vec<u8> {
 		&self.data
+	}
+
+	pub fn to_string(&self) -> String {
+		String::from_utf8_lossy(&self.data).to_string()
 	}
 }
 
@@ -113,7 +122,7 @@ fn read_headers(stream: &TcpStream) -> Result<(bool, u32), SheetError> {
 	}
 }
 
-fn read_data(stream: &TcpStream, buf_size: usize) -> Result<String, SheetError> {
+fn read_data(stream: &TcpStream, buf_size: usize) -> Result<Vec<u8>, SheetError> {
 	let mut data = Vec::<u8>::with_capacity(buf_size);
 	let mut buf = [0u8; 4096];
 	let mut read_bytes: usize = 0;
@@ -122,7 +131,7 @@ fn read_data(stream: &TcpStream, buf_size: usize) -> Result<String, SheetError> 
 		match stream.try_read(&mut buf) {
 			Ok(0) => {
 				if read_bytes == buf_size {
-					return Ok(String::from_utf8(data).unwrap());
+					return Ok(data);
 				}
 
 				return Err(SheetError::new(
@@ -136,7 +145,7 @@ fn read_data(stream: &TcpStream, buf_size: usize) -> Result<String, SheetError> 
 				read_bytes += size;
 
 				if size == buf_size {
-					return Ok(String::from_utf8(data).unwrap());
+					return Ok(data);
 				}
 
 				continue;
@@ -155,3 +164,5 @@ fn read_data(stream: &TcpStream, buf_size: usize) -> Result<String, SheetError> 
 		}
 	}
 }
+
+pub use crate::sheet::builder::*;
