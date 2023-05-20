@@ -5,7 +5,9 @@ pub use crate::error::PaperError;
 #[derive(PartialEq, Debug)]
 pub enum ErrorKind {
 	EmptyBuf,
+
 	InvalidStream,
+	InvalidData,
 
 	Disconnected,
 }

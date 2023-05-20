@@ -1,11 +1,13 @@
+pub mod error;
+pub mod reader;
+
 use std::io;
 use tokio::net::TcpStream;
-use crate::stream_error::{StreamError, ErrorKind};
 
 pub type Buffer = Vec<u8>;
 
-pub async fn read_buf(stream: &TcpStream, buf_size: usize) -> Result<Buffer, StreamError> {
-	let mut buf = vec![0u8; buf_size];
+pub async fn read_buf(stream: &TcpStream, buf_size: &usize) -> Result<Buffer, StreamError> {
+	let mut buf = vec![0u8; *buf_size];
 	let mut read_size: usize = 0;
 
 	loop {
@@ -18,7 +20,7 @@ pub async fn read_buf(stream: &TcpStream, buf_size: usize) -> Result<Buffer, Str
 
 		match stream.try_read(&mut buf) {
 			Ok(0) => {
-				if read_size == buf_size {
+				if read_size == *buf_size {
 					return Ok(buf);
 				}
 
@@ -31,7 +33,7 @@ pub async fn read_buf(stream: &TcpStream, buf_size: usize) -> Result<Buffer, Str
 			Ok(size) => {
 				read_size += size;
 
-				if read_size == buf_size {
+				if read_size == *buf_size {
 					return Ok(buf);
 				}
 			},
@@ -77,3 +79,6 @@ pub async fn write_buf(stream: &TcpStream, buf: &[u8]) -> Result<(), StreamError
 		}
 	}
 }
+
+pub use crate::stream::error::*;
+pub use crate::stream::reader::*;

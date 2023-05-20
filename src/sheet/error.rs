@@ -4,10 +4,9 @@ pub use crate::error::PaperError;
 
 #[derive(PartialEq, Debug)]
 pub enum ErrorKind {
-	EmptyBuf,
+	Empty,
 	InvalidStream,
-
-	InvalidIndicator,
+	InvalidData,
 }
 
 #[derive(Debug)]
