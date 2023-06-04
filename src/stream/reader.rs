@@ -24,12 +24,10 @@ impl<'a> StreamReader<'a> {
 			TRUE_INDICATOR => Ok(true),
 			FALSE_INDICATOR => Ok(false),
 
-			_ => {
-				return Err(StreamError::new(
-					ErrorKind::InvalidData,
-					"Could not read data from stream."
-				));
-			},
+			_ => Err(StreamError::new(
+				ErrorKind::InvalidData,
+				"Could not read data from stream."
+			)),
 		}
 	}
 
@@ -45,12 +43,10 @@ impl<'a> StreamReader<'a> {
 		match rdr.read_u16::<LittleEndian>() {
 			Ok(data) => Ok(data),
 
-			Err(_) => {
-				return Err(StreamError::new(
-					ErrorKind::InvalidData,
-					"Could not read data from stream."
-				));
-			},
+			Err(_) => Err(StreamError::new(
+				ErrorKind::InvalidData,
+				"Could not read data from stream."
+			)),
 		}
 	}
 
@@ -61,12 +57,10 @@ impl<'a> StreamReader<'a> {
 		match rdr.read_u32::<LittleEndian>() {
 			Ok(data) => Ok(data),
 
-			Err(_) => {
-				return Err(StreamError::new(
-					ErrorKind::InvalidData,
-					"Could not read data from stream."
-				));
-			},
+			Err(_) => Err(StreamError::new(
+				ErrorKind::InvalidData,
+				"Could not read data from stream."
+			)),
 		}
 	}
 
@@ -77,12 +71,10 @@ impl<'a> StreamReader<'a> {
 		match rdr.read_u64::<LittleEndian>() {
 			Ok(data) => Ok(data),
 
-			Err(_) => {
-				return Err(StreamError::new(
-					ErrorKind::InvalidData,
-					"Could not read data from stream."
-				));
-			},
+			Err(_) => Err(StreamError::new(
+				ErrorKind::InvalidData,
+				"Could not read data from stream."
+			)),
 		}
 	}
 
@@ -93,12 +85,10 @@ impl<'a> StreamReader<'a> {
 		match rdr.read_f32::<LittleEndian>() {
 			Ok(data) => Ok(data),
 
-			Err(_) => {
-				return Err(StreamError::new(
-					ErrorKind::InvalidData,
-					"Could not read data from stream."
-				));
-			},
+			Err(_) => Err(StreamError::new(
+				ErrorKind::InvalidData,
+				"Could not read data from stream."
+			)),
 		}
 	}
 
@@ -109,12 +99,10 @@ impl<'a> StreamReader<'a> {
 		match rdr.read_f64::<LittleEndian>() {
 			Ok(data) => Ok(data),
 
-			Err(_) => {
-				return Err(StreamError::new(
-					ErrorKind::InvalidData,
-					"Could not read data from stream."
-				));
-			},
+			Err(_) => Err(StreamError::new(
+				ErrorKind::InvalidData,
+				"Could not read data from stream."
+			)),
 		}
 	}
 
@@ -127,17 +115,13 @@ impl<'a> StreamReader<'a> {
 		let size = self.read_u32().await? as usize;
 		let buf = read_buf(self.stream, &size).await?;
 
-		let string = match String::from_utf8(buf) {
-			Ok(string) => string,
+		match String::from_utf8(buf) {
+			Ok(string) => Ok(string),
 
-			Err(_) => {
-				return Err(StreamError::new(
-					ErrorKind::InvalidData,
-					"Could not read data from stream."
-				));
-			},
-		};
-
-		Ok(string)
+			Err(_) => Err(StreamError::new(
+				ErrorKind::InvalidData,
+				"Could not read data from stream."
+			)),
+		}
 	}
 }

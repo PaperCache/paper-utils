@@ -11,7 +11,7 @@ pub async fn read_buf(stream: &TcpStream, buf_size: &usize) -> Result<Buffer, St
 	let mut read_size: usize = 0;
 
 	loop {
-		if let Err(_) = stream.readable().await {
+		if (stream.readable().await).is_err() {
 			return Err(StreamError::new(
 				ErrorKind::Disconnected,
 				"Disconnected from stream."
@@ -54,7 +54,7 @@ pub async fn read_buf(stream: &TcpStream, buf_size: &usize) -> Result<Buffer, St
 
 pub async fn write_buf(stream: &TcpStream, buf: &[u8]) -> Result<(), StreamError> {
 	loop {
-		if let Err(_) = stream.writable().await {
+		if (stream.writable().await).is_err() {
 			return Err(StreamError::new(
 				ErrorKind::Disconnected,
 				"Disconnected from stream."

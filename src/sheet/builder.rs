@@ -77,3 +77,9 @@ impl SheetBuilder {
 		Sheet::new(self.data)
 	}
 }
+
+impl Default for SheetBuilder {
+	fn default() -> Self {
+		SheetBuilder::new()
+	}
+}
