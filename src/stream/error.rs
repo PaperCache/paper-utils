@@ -8,8 +8,6 @@ pub enum ErrorKind {
 
 	InvalidStream,
 	InvalidData,
-
-	Disconnected,
 }
 
 #[derive(Debug)]
