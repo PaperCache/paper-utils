@@ -1,5 +1,5 @@
 use std::io::Cursor;
-use tokio::net::TcpStream;
+use std::net::TcpStream;
 use byteorder::{LittleEndian, ReadBytesExt};
 use crate::stream::{Buffer, StreamError, ErrorKind, read_buf};
 
@@ -7,18 +7,18 @@ pub const TRUE_INDICATOR: u8 = 33;
 pub const FALSE_INDICATOR: u8 = 63;
 
 pub struct StreamReader<'a> {
-	stream: &'a TcpStream,
+	stream: &'a mut TcpStream,
 }
 
 impl<'a> StreamReader<'a> {
-	pub fn new(stream: &'a TcpStream) -> Self {
+	pub fn new(stream: &'a mut TcpStream) -> Self {
 		StreamReader {
 			stream,
 		}
 	}
 
-	pub async fn read_bool(&self) -> Result<bool, StreamError> {
-		let buf = read_buf(self.stream, &1).await?;
+	pub fn read_bool(&mut self) -> Result<bool, StreamError> {
+		let buf = read_buf(self.stream, 1)?;
 
 		match buf[0] {
 			TRUE_INDICATOR => Ok(true),
@@ -31,13 +31,13 @@ impl<'a> StreamReader<'a> {
 		}
 	}
 
-	pub async fn read_u8(&self) -> Result<u8, StreamError> {
-		let buf = read_buf(self.stream, &1).await?;
+	pub fn read_u8(&mut self) -> Result<u8, StreamError> {
+		let buf = read_buf(self.stream, 1)?;
 		Ok(buf[0])
 	}
 
-	pub async fn read_u16(&self) -> Result<u16, StreamError> {
-		let buf = read_buf(self.stream, &2).await?;
+	pub fn read_u16(&mut self) -> Result<u16, StreamError> {
+		let buf = read_buf(self.stream, 2)?;
 		let mut rdr = Cursor::new(buf);
 
 		match rdr.read_u16::<LittleEndian>() {
@@ -50,8 +50,8 @@ impl<'a> StreamReader<'a> {
 		}
 	}
 
-	pub async fn read_u32(&self) -> Result<u32, StreamError> {
-		let buf = read_buf(self.stream, &4).await?;
+	pub fn read_u32(&mut self) -> Result<u32, StreamError> {
+		let buf = read_buf(self.stream, 4)?;
 		let mut rdr = Cursor::new(buf);
 
 		match rdr.read_u32::<LittleEndian>() {
@@ -64,8 +64,8 @@ impl<'a> StreamReader<'a> {
 		}
 	}
 
-	pub async fn read_u64(&self) -> Result<u64, StreamError> {
-		let buf = read_buf(self.stream, &8).await?;
+	pub fn read_u64(&mut self) -> Result<u64, StreamError> {
+		let buf = read_buf(self.stream, 8)?;
 		let mut rdr = Cursor::new(buf);
 
 		match rdr.read_u64::<LittleEndian>() {
@@ -78,8 +78,8 @@ impl<'a> StreamReader<'a> {
 		}
 	}
 
-	pub async fn read_f32(&self) -> Result<f32, StreamError> {
-		let buf = read_buf(self.stream, &4).await?;
+	pub fn read_f32(&mut self) -> Result<f32, StreamError> {
+		let buf = read_buf(self.stream, 4)?;
 		let mut rdr = Cursor::new(buf);
 
 		match rdr.read_f32::<LittleEndian>() {
@@ -92,8 +92,8 @@ impl<'a> StreamReader<'a> {
 		}
 	}
 
-	pub async fn read_f64(&self) -> Result<f64, StreamError> {
-		let buf = read_buf(self.stream, &8).await?;
+	pub fn read_f64(&mut self) -> Result<f64, StreamError> {
+		let buf = read_buf(self.stream, 8)?;
 		let mut rdr = Cursor::new(buf);
 
 		match rdr.read_f64::<LittleEndian>() {
@@ -106,14 +106,14 @@ impl<'a> StreamReader<'a> {
 		}
 	}
 
-	pub async fn read_buf(&self) -> Result<Buffer, StreamError> {
-		let size = self.read_u32().await? as usize;
-		read_buf(self.stream, &size).await
+	pub fn read_buf(&mut self) -> Result<Buffer, StreamError> {
+		let size = self.read_u32()? as usize;
+		read_buf(self.stream, size)
 	}
 
-	pub async fn read_string(&self) -> Result<String, StreamError> {
-		let size = self.read_u32().await? as usize;
-		let buf = read_buf(self.stream, &size).await?;
+	pub fn read_string(&mut self) -> Result<String, StreamError> {
+		let size = self.read_u32()? as usize;
+		let buf = read_buf(self.stream, size)?;
 
 		match String::from_utf8(buf) {
 			Ok(string) => Ok(string),

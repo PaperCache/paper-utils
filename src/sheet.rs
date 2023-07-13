@@ -1,7 +1,7 @@
 pub mod error;
 pub mod builder;
 
-use tokio::net::TcpStream;
+use std::net::TcpStream;
 use crate::stream::{Buffer, StreamError, ErrorKind as StreamErrorKind, write_buf};
 
 pub struct Sheet {
@@ -23,8 +23,8 @@ impl Sheet {
 		&self.data
 	}
 
-	pub async fn to_stream(&self, stream: &TcpStream) -> Result<(), StreamError> {
-		match write_buf(stream, &self.data).await {
+	pub fn to_stream(&self, stream: &mut TcpStream) -> Result<(), StreamError> {
+		match write_buf(stream, &self.data) {
 			Ok(_) => Ok(()),
 
 			Err(_) => Err(StreamError::new(
