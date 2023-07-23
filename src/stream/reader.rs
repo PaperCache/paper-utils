@@ -1,5 +1,8 @@
-use std::io::Cursor;
-use std::net::TcpStream;
+use std::{
+    io::Cursor,
+    net::TcpStream,
+};
+
 use byteorder::{LittleEndian, ReadBytesExt};
 use crate::stream::{Buffer, StreamError, ErrorKind, read_buf};
 

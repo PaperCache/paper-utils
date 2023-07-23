@@ -1,8 +1,10 @@
 pub mod error;
 pub mod reader;
 
-use std::io::{Read, Write};
-use std::net::TcpStream;
+use std::{
+    io::{Read, Write},
+    net::TcpStream,
+};
 
 pub type Buffer = Vec<u8>;
 
