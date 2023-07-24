@@ -1,6 +1,6 @@
 use std::{
-    io::Cursor,
-    net::TcpStream,
+	io::Cursor,
+	net::TcpStream,
 };
 
 use byteorder::{LittleEndian, ReadBytesExt};
