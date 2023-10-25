@@ -7,12 +7,14 @@ impl CommandByte {
 	pub const GET: u8 = 2;
 	pub const SET: u8 = 3;
 	pub const DEL: u8 = 4;
-	pub const PEEK: u8 = 5;
 
-	pub const WIPE: u8 = 6;
+	pub const HAS: u8 = 5;
+	pub const PEEK: u8 = 6;
 
-	pub const RESIZE: u8 = 7;
-	pub const POLICY: u8 = 8;
+	pub const WIPE: u8 = 7;
 
-	pub const STATS: u8 = 9;
+	pub const RESIZE: u8 = 8;
+	pub const POLICY: u8 = 9;
+
+	pub const STATS: u8 = 10;
 }
