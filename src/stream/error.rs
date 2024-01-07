@@ -1,47 +1,13 @@
-use std::{
-	error::Error,
-	fmt::{Display, Formatter},
-};
+use thiserror::Error;
 
-pub use crate::error::PaperError;
-
-#[derive(PartialEq, Debug)]
-pub enum ErrorKind {
-	EmptyBuf,
-
+#[derive(Debug, Error)]
+pub enum StreamError {
+	#[error("Could not write to stream.")]
 	InvalidStream,
+
+	#[error("Stream closed unexpectedly.")]
+	ClosedStream,
+
+	#[error("Could not read data from stream.")]
 	InvalidData,
-}
-
-#[derive(Debug)]
-pub struct StreamError {
-	kind: ErrorKind,
-	message: String,
-}
-
-impl StreamError {
-	pub fn new(kind: ErrorKind, message: &str) -> Self {
-		StreamError {
-			kind,
-			message: message.to_owned(),
-		}
-	}
-
-	pub fn kind(&self) -> &ErrorKind {
-		&self.kind
-	}
-}
-
-impl PaperError for StreamError {
-	fn message(&self) -> &str {
-		&self.message
-	}
-}
-
-impl Error for StreamError {}
-
-impl Display for StreamError {
-	fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
-		write!(f, "{}", self.message)
-	}
 }

@@ -4,7 +4,7 @@ use std::{
 };
 
 use byteorder::{LittleEndian, ReadBytesExt};
-use crate::stream::{Buffer, StreamError, ErrorKind, read_buf};
+use crate::stream::{Buffer, StreamError, read_buf};
 
 pub const TRUE_INDICATOR: u8 = 33;
 pub const FALSE_INDICATOR: u8 = 63;
@@ -27,10 +27,7 @@ impl<'a> StreamReader<'a> {
 			TRUE_INDICATOR => Ok(true),
 			FALSE_INDICATOR => Ok(false),
 
-			_ => Err(StreamError::new(
-				ErrorKind::InvalidData,
-				"Could not read data from stream."
-			)),
+			_ => Err(StreamError::InvalidData),
 		}
 	}
 
@@ -43,70 +40,35 @@ impl<'a> StreamReader<'a> {
 		let buf = read_buf(self.stream, 2)?;
 		let mut rdr = Cursor::new(buf);
 
-		match rdr.read_u16::<LittleEndian>() {
-			Ok(data) => Ok(data),
-
-			Err(_) => Err(StreamError::new(
-				ErrorKind::InvalidData,
-				"Could not read data from stream."
-			)),
-		}
+		rdr.read_u16::<LittleEndian>().map_err(|_| StreamError::InvalidData)
 	}
 
 	pub fn read_u32(&mut self) -> Result<u32, StreamError> {
 		let buf = read_buf(self.stream, 4)?;
 		let mut rdr = Cursor::new(buf);
 
-		match rdr.read_u32::<LittleEndian>() {
-			Ok(data) => Ok(data),
-
-			Err(_) => Err(StreamError::new(
-				ErrorKind::InvalidData,
-				"Could not read data from stream."
-			)),
-		}
+		rdr.read_u32::<LittleEndian>().map_err(|_| StreamError::InvalidData)
 	}
 
 	pub fn read_u64(&mut self) -> Result<u64, StreamError> {
 		let buf = read_buf(self.stream, 8)?;
 		let mut rdr = Cursor::new(buf);
 
-		match rdr.read_u64::<LittleEndian>() {
-			Ok(data) => Ok(data),
-
-			Err(_) => Err(StreamError::new(
-				ErrorKind::InvalidData,
-				"Could not read data from stream."
-			)),
-		}
+		rdr.read_u64::<LittleEndian>().map_err(|_| StreamError::InvalidData)
 	}
 
 	pub fn read_f32(&mut self) -> Result<f32, StreamError> {
 		let buf = read_buf(self.stream, 4)?;
 		let mut rdr = Cursor::new(buf);
 
-		match rdr.read_f32::<LittleEndian>() {
-			Ok(data) => Ok(data),
-
-			Err(_) => Err(StreamError::new(
-				ErrorKind::InvalidData,
-				"Could not read data from stream."
-			)),
-		}
+		rdr.read_f32::<LittleEndian>().map_err(|_| StreamError::InvalidData)
 	}
 
 	pub fn read_f64(&mut self) -> Result<f64, StreamError> {
 		let buf = read_buf(self.stream, 8)?;
 		let mut rdr = Cursor::new(buf);
 
-		match rdr.read_f64::<LittleEndian>() {
-			Ok(data) => Ok(data),
-
-			Err(_) => Err(StreamError::new(
-				ErrorKind::InvalidData,
-				"Could not read data from stream."
-			)),
-		}
+		rdr.read_f64::<LittleEndian>().map_err(|_| StreamError::InvalidData)
 	}
 
 	pub fn read_buf(&mut self) -> Result<Buffer, StreamError> {
@@ -118,13 +80,6 @@ impl<'a> StreamReader<'a> {
 		let size = self.read_u32()? as usize;
 		let buf = read_buf(self.stream, size)?;
 
-		match String::from_utf8(buf) {
-			Ok(string) => Ok(string),
-
-			Err(_) => Err(StreamError::new(
-				ErrorKind::InvalidData,
-				"Could not read data from stream."
-			)),
-		}
+		String::from_utf8(buf).map_err(|_| StreamError::InvalidData)
 	}
 }
