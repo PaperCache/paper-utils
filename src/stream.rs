@@ -6,10 +6,10 @@ use std::{
 	net::TcpStream,
 };
 
-pub type Buffer = Vec<u8>;
+pub type Buffer = Box<[u8]>;
 
 pub fn read_buf(stream: &mut TcpStream, buf_size: usize) -> Result<Buffer, StreamError> {
-	let mut buf = vec![0u8; buf_size];
+	let mut buf = vec![0u8; buf_size].into_boxed_slice();
 
 	match stream.read_exact(&mut buf) {
 		Ok(_) => Ok(buf),
@@ -18,7 +18,7 @@ pub fn read_buf(stream: &mut TcpStream, buf_size: usize) -> Result<Buffer, Strea
 }
 
 pub fn write_buf(stream: &mut TcpStream, buf: &[u8]) -> Result<(), StreamError> {
-	match stream.write(buf) {
+	match stream.write_all(buf) {
 		Ok(_) => Ok(()),
 		Err(_) => Err(StreamError::InvalidStream),
 	}

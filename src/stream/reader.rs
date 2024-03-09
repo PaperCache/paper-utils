@@ -80,6 +80,6 @@ impl<'a> StreamReader<'a> {
 		let size = self.read_u32()? as usize;
 		let buf = read_buf(self.stream, size)?;
 
-		String::from_utf8(buf).map_err(|_| StreamError::InvalidData)
+		String::from_utf8(buf.to_vec()).map_err(|_| StreamError::InvalidData)
 	}
 }

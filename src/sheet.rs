@@ -15,7 +15,7 @@ impl Sheet {
 	}
 
 	pub fn serialize(&self) -> &[u8] {
-		self.data.as_slice()
+		&self.data
 	}
 
 	pub fn data(&self) -> &Buffer {

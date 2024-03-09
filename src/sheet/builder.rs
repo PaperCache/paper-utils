@@ -74,7 +74,7 @@ impl SheetBuilder {
 	}
 
 	pub fn to_sheet(self) -> Sheet {
-		Sheet::new(self.data)
+		Sheet::new(self.data.into_boxed_slice())
 	}
 }
 
