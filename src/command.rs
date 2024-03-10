@@ -10,11 +10,12 @@ impl CommandByte {
 
 	pub const HAS: u8 = 5;
 	pub const PEEK: u8 = 6;
+	pub const TTL: u8 = 7;
 
-	pub const WIPE: u8 = 7;
+	pub const WIPE: u8 = 8;
 
-	pub const RESIZE: u8 = 8;
-	pub const POLICY: u8 = 9;
+	pub const RESIZE: u8 = 9;
+	pub const POLICY: u8 = 10;
 
-	pub const STATS: u8 = 10;
+	pub const STATS: u8 = 11;
 }
