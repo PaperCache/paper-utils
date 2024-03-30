@@ -1,6 +1,6 @@
 use thiserror::Error;
 
-#[derive(Debug, Error)]
+#[derive(Debug, PartialEq, Error)]
 pub enum StreamError {
 	#[error("Could not write to stream.")]
 	InvalidStream,
