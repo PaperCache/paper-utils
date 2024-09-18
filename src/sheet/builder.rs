@@ -73,7 +73,7 @@ impl SheetBuilder {
 		self.write_buf(value.as_bytes())
 	}
 
-	pub fn to_sheet(self) -> Sheet {
+	pub fn into_sheet(self) -> Sheet {
 		Sheet::new(self.data.into_boxed_slice())
 	}
 }
