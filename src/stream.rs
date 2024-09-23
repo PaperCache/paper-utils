@@ -7,9 +7,19 @@ use std::{
 };
 
 pub type Buffer = Box<[u8]>;
+pub type StackBuffer<const N: usize> = [u8; N];
 
 pub fn read_buf(stream: &mut TcpStream, buf_size: usize) -> Result<Buffer, StreamError> {
 	let mut buf = vec![0u8; buf_size].into_boxed_slice();
+
+	match stream.read_exact(&mut buf) {
+		Ok(_) => Ok(buf),
+		Err(_) => Err(StreamError::ClosedStream),
+	}
+}
+
+pub fn read_stack_buf<const N: usize>(stream: &mut TcpStream) -> Result<StackBuffer<N>, StreamError> {
+	let mut buf = [0u8; N];
 
 	match stream.read_exact(&mut buf) {
 		Ok(_) => Ok(buf),

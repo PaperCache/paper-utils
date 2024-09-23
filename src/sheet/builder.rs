@@ -1,14 +1,14 @@
-use byteorder::{LittleEndian, WriteBytesExt};
+use smallvec::SmallVec;
 use crate::sheet::Sheet;
 
 pub struct SheetBuilder {
-	data: Vec<u8>,
+	data: SmallVec<[u8; 3]>,
 }
 
 impl SheetBuilder {
 	pub fn new() -> Self {
 		SheetBuilder {
-			data: Vec::new(),
+			data: SmallVec::new(),
 		}
 	}
 
@@ -24,48 +24,33 @@ impl SheetBuilder {
 	}
 
 	pub fn write_u16(mut self, value: u16) -> Self {
-		let mut wtr = vec![];
-		wtr.write_u16::<LittleEndian>(value).unwrap();
-
-		self.data.extend(wtr);
+		self.data.extend_from_slice(&value.to_le_bytes());
 		self
 	}
 
 	pub fn write_u32(mut self, value: u32) -> Self {
-		let mut wtr = vec![];
-		wtr.write_u32::<LittleEndian>(value).unwrap();
-
-		self.data.extend(wtr);
+		self.data.extend_from_slice(&value.to_le_bytes());
 		self
 	}
 
 	pub fn write_u64(mut self, value: u64) -> Self {
-		let mut wtr = vec![];
-		wtr.write_u64::<LittleEndian>(value).unwrap();
-
-		self.data.extend(wtr);
+		self.data.extend_from_slice(&value.to_le_bytes());
 		self
 	}
 
 	pub fn write_f32(mut self, value: f32) -> Self {
-		let mut wtr = vec![];
-		wtr.write_f32::<LittleEndian>(value).unwrap();
-
-		self.data.extend(wtr);
+		self.data.extend_from_slice(&value.to_le_bytes());
 		self
 	}
 
 	pub fn write_f64(mut self, value: f64) -> Self {
-		let mut wtr = vec![];
-		wtr.write_f64::<LittleEndian>(value).unwrap();
-
-		self.data.extend(wtr);
+		self.data.extend_from_slice(&value.to_le_bytes());
 		self
 	}
 
 	pub fn write_buf(mut self, value: &[u8]) -> Self {
 		self = self.write_u32(value.len() as u32);
-		self.data.extend(value);
+		self.data.extend_from_slice(value);
 		self
 	}
 
