@@ -54,8 +54,11 @@ impl SheetBuilder {
 		self
 	}
 
-	pub fn write_str(self, value: &str) -> Self {
-		self.write_buf(value.as_bytes())
+	pub fn write_str<T>(self, value: T) -> Self
+	where
+		T: AsRef<str>,
+	{
+		self.write_buf(value.as_ref().as_bytes())
 	}
 
 	pub fn into_sheet(self) -> Sheet {
