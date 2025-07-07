@@ -1,7 +1,15 @@
 [package]
-name = "paper_utils"
-version = "1.2.4"
+name = "paper-utils"
+version = "1.2.5"
 edition = "2024"
+license = "AGPL-3.0"
+license-file = "LICENSE"
+description = "A utility crate for PaperCache."
+repository = "https://github.com/PaperCache/paper-utils.git"
+readme = "README.md"
+homepage = "https://papercache.io"
+keywords = ["caching", "PaperCache"]
+categories = ["caching"]
 
 [dependencies]
 byteorder = "1.5.0"
