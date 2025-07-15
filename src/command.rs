@@ -27,5 +27,5 @@ impl CommandByte {
 	pub const RESIZE: u8 = 11;
 	pub const POLICY: u8 = 12;
 
-	pub const STATS: u8 = 13;
+	pub const STATUS: u8 = 13;
 }
