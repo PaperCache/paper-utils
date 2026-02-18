@@ -8,6 +8,7 @@
 pub mod builder;
 
 use std::net::TcpStream;
+
 use crate::stream::{Buffer, StreamError, write_buf};
 
 pub struct Sheet {

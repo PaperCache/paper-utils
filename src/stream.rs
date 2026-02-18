@@ -25,7 +25,9 @@ pub fn read_buf(stream: &mut TcpStream, buf_size: usize) -> Result<Buffer, Strea
 	}
 }
 
-pub fn read_stack_buf<const N: usize>(stream: &mut TcpStream) -> Result<StackBuffer<N>, StreamError> {
+pub fn read_stack_buf<const N: usize>(
+	stream: &mut TcpStream,
+) -> Result<StackBuffer<N>, StreamError> {
 	let mut buf = [0u8; N];
 
 	match stream.read_exact(&mut buf) {
@@ -41,5 +43,4 @@ pub fn write_buf(stream: &mut TcpStream, buf: &[u8]) -> Result<(), StreamError> 
 	}
 }
 
-pub use crate::stream::error::*;
-pub use crate::stream::reader::*;
+pub use crate::stream::{error::*, reader::*};

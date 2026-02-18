@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-pub mod stream;
 pub mod sheet;
+pub mod stream;
 
 pub mod command;

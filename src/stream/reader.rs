@@ -5,12 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-use std::{
-	io::Cursor,
-	net::TcpStream,
-};
+use std::{io::Cursor, net::TcpStream};
 
 use byteorder::{LittleEndian, ReadBytesExt};
+
 use crate::stream::{Buffer, StreamError, read_buf, read_stack_buf};
 
 pub const TRUE_INDICATOR: u8 = 33;
@@ -47,35 +45,40 @@ impl<'a> StreamReader<'a> {
 		let buf = read_stack_buf::<2>(self.stream)?;
 		let mut rdr = Cursor::new(buf);
 
-		rdr.read_u16::<LittleEndian>().map_err(|_| StreamError::InvalidData)
+		rdr.read_u16::<LittleEndian>()
+			.map_err(|_| StreamError::InvalidData)
 	}
 
 	pub fn read_u32(&mut self) -> Result<u32, StreamError> {
 		let buf = read_stack_buf::<4>(self.stream)?;
 		let mut rdr = Cursor::new(buf);
 
-		rdr.read_u32::<LittleEndian>().map_err(|_| StreamError::InvalidData)
+		rdr.read_u32::<LittleEndian>()
+			.map_err(|_| StreamError::InvalidData)
 	}
 
 	pub fn read_u64(&mut self) -> Result<u64, StreamError> {
 		let buf = read_stack_buf::<8>(self.stream)?;
 		let mut rdr = Cursor::new(buf);
 
-		rdr.read_u64::<LittleEndian>().map_err(|_| StreamError::InvalidData)
+		rdr.read_u64::<LittleEndian>()
+			.map_err(|_| StreamError::InvalidData)
 	}
 
 	pub fn read_f32(&mut self) -> Result<f32, StreamError> {
 		let buf = read_stack_buf::<4>(self.stream)?;
 		let mut rdr = Cursor::new(buf);
 
-		rdr.read_f32::<LittleEndian>().map_err(|_| StreamError::InvalidData)
+		rdr.read_f32::<LittleEndian>()
+			.map_err(|_| StreamError::InvalidData)
 	}
 
 	pub fn read_f64(&mut self) -> Result<f64, StreamError> {
 		let buf = read_stack_buf::<8>(self.stream)?;
 		let mut rdr = Cursor::new(buf);
 
-		rdr.read_f64::<LittleEndian>().map_err(|_| StreamError::InvalidData)
+		rdr.read_f64::<LittleEndian>()
+			.map_err(|_| StreamError::InvalidData)
 	}
 
 	pub fn read_buf(&mut self) -> Result<Buffer, StreamError> {

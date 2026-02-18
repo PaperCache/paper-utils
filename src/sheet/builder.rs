@@ -6,6 +6,7 @@
  */
 
 use smallvec::SmallVec;
+
 use crate::sheet::Sheet;
 
 pub struct SheetBuilder {
