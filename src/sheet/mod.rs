@@ -7,8 +7,13 @@
 
 pub mod builder;
 
-use std::net::TcpStream;
+use std::io::Write;
 
+#[cfg(feature = "tokio")]
+use tokio::io::AsyncWrite;
+
+#[cfg(feature = "tokio")]
+use crate::stream::write_buf_async;
 use crate::stream::{Buffer, StreamError, write_buf};
 
 pub struct Sheet {
@@ -30,8 +35,19 @@ impl Sheet {
 		&self.data
 	}
 
-	pub fn write_to_stream(&self, stream: &mut TcpStream) -> Result<(), StreamError> {
-		match write_buf(stream, &self.data) {
+	pub fn write(&self, writer: &mut impl Write) -> Result<(), StreamError> {
+		match write_buf(writer, &self.data) {
+			Ok(_) => Ok(()),
+			Err(_) => Err(StreamError::InvalidStream),
+		}
+	}
+
+	#[cfg(feature = "tokio")]
+	pub async fn write_async<W>(&self, writer: &mut W) -> Result<(), StreamError>
+	where
+		W: AsyncWrite + Unpin,
+	{
+		match write_buf_async(writer, &self.data).await {
 			Ok(_) => Ok(()),
 			Err(_) => Err(StreamError::InvalidStream),
 		}
